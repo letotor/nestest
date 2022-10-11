@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  posts     Post[] 
+  role    Role     @default(USER)
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model Society {
+  id        Int      @id @default(autoincrement())
+  name      String  
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  siret     Int  @unique
+  image     String? 
+  details   String? 
+  open      Json?   
+  adressStreet String
+  adressNum   Int
+  adressCity  String
+  adressCountry String
+  adressZip   Int
+  adressCedex Int?
+  adressLat   String?
+  adressLong  String?
+  phone       String
+  email       String @unique
+  website     String?
+  facebook    String?
+  twitter     String?
+  instagram   String?
+  youtube     String?
+  linkedin    String?
+  status      Status     @default(PENDING)
+}
+
+
+enum Role {
+  USER
+  ADMIN
+  ARTISAN
+}
+
+enum Status {
+  PENDING
+  VALIDATED
+  REFUSED
+}
